@@ -36,14 +36,14 @@ class Boat {
     constructor() {
         this.sprite = new Image();
         this.sprite.src = 'images/boat.png';
-        this.dx = 20;
+        this.dx = 15;
+        this.direction = false;
 
     }
 
     initLoc() {
         this.x = canvas.width/2;
         this.y = canvas.height - this.sprite.height -100;
-
     }
 
     render() {
@@ -51,13 +51,36 @@ class Boat {
     }
 
     update() {
+        // Move left
+        if (this.direction && this.direction === 37
+                && this.x - this.dx >= 0)
+            this.x -= this.dx;
+        // Move right
+        if (this.direction && this.direction === 39
+                && this.x <= canvas.width - this.sprite.width)
+            this.x += this.dx;
     }
-    
+}
+
+class Parachute {
+
 }
 
 /**********************************************************
- *                   Variable Declarations                 *
+ *                   Variable Declarations                *
  **********************************************************/
 
 var plane = new Plane();
 var boat = new Boat();
+
+
+/**********************************************************
+ *                      Event Listeners                   *
+ **********************************************************/
+
+window.addEventListener('keydown', function (e) {
+    boat.direction = e.keyCode;
+})
+window.addEventListener('keyup', function (e) {
+    boat.direction = false;
+})
