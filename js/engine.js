@@ -1,23 +1,11 @@
 /* Engine.js
- * This file provides the game loop functionality (update entities and render),
+ * This file provides the game loop functionality,
  * draws the initial game board on the screen, and then calls the update and
- * render methods on your player and enemy objects (defined in your app.js).
- *
- * A game engine works by drawing the entire game screen over and over, kind of
- * like a flipbook you may have created as a kid. When your player moves across
- * the screen, it may look like just that image/character is moving or being
- * drawn but that is not the case. What's really happening is the entire "scene"
- * is being drawn over and over, presenting the illusion of animation.
- *
- * This engine makes the canvas' context (ctx) object globally available to make
- * writing app.js a little simpler to work with.
+ * render methods on all objects (defined in app.js).
  */
 
 var Engine = (function(global) {
-    /* Predefine the variables we'll be using within this scope,
-     * create the canvas element, grab the 2D context for that canvas
-     * set the canvas elements height/width and add it to the DOM.
-     */
+
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
@@ -37,22 +25,16 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
-        /* Get our time delta information which is required if your game
-         * requires smooth animation. Because everyone's computer processes
-         * instructions at different speeds we need a constant value that
-         * would be the same for everyone (regardless of how fast their
-         * computer is) - hurray time!
+        /* Get the time delta information which ensures smooth animation
+        when app is run on different users computers.
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
-        /* Call our update/render functions, pass along the time delta to
-         * our update function since it may be used for smooth animation.
-         */
         update(dt);
         render();
 
-        /* Set our lastTime variable which is used to determine the time delta
+        /* Set the lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
         lastTime = now;
@@ -63,10 +45,7 @@ var Engine = (function(global) {
         win.requestAnimationFrame(main);
     }
 
-    /* This function does some initial setup that should only occur once,
-     * particularly setting the lastTime variable that is required for the
-     * game loop.
-     */
+    /* This function does some initial setup that should only occur once*/
     function init() {
         reset();
         lastTime = Date.now();
@@ -74,52 +53,36 @@ var Engine = (function(global) {
     }
 
     /* This function is called by main (our game loop) and itself calls all
-     * of the functions which may need to update entity's data.
+     * of the functions which may need to update data.
      */
     function update(dt) {
         plane.update(dt);
         boat.update();
-        //updateEntities(dt);
-        // checkCollisions();
+
+        allParachuters.forEach(function(parachute) {
+                parachute.update(dt);
+            });
     }
 
-    // function updateEntities(dt) {
-    //     allEnemies.forEach(function(enemy) {
-    //         enemy.update(dt);
-    //     });
-    //     player.update();
-    // }
 
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. This function is called every
-     * game tick (or loop of the game engine)
+    /* This function initially draws the game area.
+     * This function is called every game tick
+     * It calls all render functions defined for the objects in app.js
      */
-
     function render() {
         // Before drawing, clear existing canvas
         ctx.clearRect(0,0,canvas.width,canvas.height)
+
         ctx.drawImage(background, 0, 0);
         ctx.drawImage(sea, 0, canvas.height - sea.height + 100);
 
         plane.render();
         boat.render();
+        allParachuters.forEach(function(parachute) {
+                parachute.render();
+            });
     }
 
-
-    /* This function is called by the render function and is called on each game
-     * tick. Its purpose is to then call the render functions you have defined
-     * on your enemy and player entities within app.js
-     */
-    // function renderEntities() {
-    //     /* Loop through all of the objects within the allEnemies array and call
-    //      * the render function you have defined.
-    //      */
-    //     allEnemies.forEach(function(enemy) {
-    //         enemy.render();
-    //     });
-    //
-    //     player.render();
-    // }
 
     /* This function handles game reset states.
      * It's only called once by the init() method.
@@ -129,14 +92,13 @@ var Engine = (function(global) {
         boat.initLoc();
     }
 
-
-    /* Assign the canvas' context object to the global variable (the window
-     * object when run in a browser) so that developers can use it more easily
-     * from within their app.js files.
+    /* Assign the canvas and canvas' context object to the global variable for ease of use
+     * from within the app.js file.
      */
     global.ctx = ctx;
     global.canvas = canvas;
 
+    // Initialize game as soon as all content has been loaded.
     win.onload = function() {init()};
 
 })(this);

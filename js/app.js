@@ -38,12 +38,11 @@ class Boat {
         this.sprite.src = 'images/boat.png';
         this.dx = 15;
         this.direction = false;
-
     }
 
     initLoc() {
-        this.x = canvas.width/2;
-        this.y = canvas.height - this.sprite.height -100;
+        this.x = canvas.width / 2;
+        this.y = canvas.height - this.sprite.height - 100;
     }
 
     render() {
@@ -63,6 +62,59 @@ class Boat {
 }
 
 class Parachute {
+    constructor(plane, boat) {
+        this.sprite = new Image();
+        this.sprite.src = 'images/parachutist.png';
+        this.plane = plane;
+        this.boat = boat;
+        this.init();
+    }
+
+    init() {
+        // this.x = 0;
+        this.y = -200;
+        this.dy = Math.floor(Math.random() * 100) + 20;
+        this.dropPoint = Math.floor(Math.random() * 800);
+        this.drop = true;
+    }
+
+    render() {
+        ctx.drawImage(this.sprite, this.x, this.y);
+    }
+
+    update(dt) {
+
+        // when drop point is reached - drop parachuter
+        if ((Math.floor(plane.x) === this.dropPoint) && this.drop) {
+            // initialize parachuters starting coordinates
+                this.x = plane.x + 50;
+                this.y = 50;
+                this.drop = false;
+        }
+
+        if (!this.drop) {
+            this.y += this.dy * dt;
+            this.boatCollision();
+            this.seaCollision();
+        }
+    }
+
+
+    // checks if parachuter lands on boat and responds accordingly
+    boatCollision() {
+        if (this.x < boat.x + boat.sprite.width && this.x + this.sprite.width > boat.x &&
+            this.y + this.sprite.height/2 < boat.y + boat.sprite.height &&
+            this.y + this.sprite.height > boat.y + boat.sprite.height/2) {
+                this.init();
+        }
+    }
+
+    // checks if parachuter lands in the water and responds accordingly
+    seaCollision() {
+        if (this.y + this.sprite.height/2 > 460) {
+            this.init();
+        }
+    }
 
 }
 
@@ -72,6 +124,11 @@ class Parachute {
 
 var plane = new Plane();
 var boat = new Boat();
+var allParachuters = [];
+
+for (var i = 0; i < 3; i++) {
+    allParachuters.push(new Parachute(plane, boat));
+}
 
 
 /**********************************************************
