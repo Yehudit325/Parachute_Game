@@ -63,14 +63,17 @@ class Boat {
 
 class Parachute {
     constructor(plane, boat, score, lives) {
-        this.sprite = new Image();
-        this.sprite.src = 'images/parachutist.png';
         this.plane = plane;
         this.boat = boat;
         this.score = score;
         this.lives = lives;
-
-        this.init();
+        this.sprite = new Image();
+        this.sprite.onload = (function(par){
+            return function() {
+                par.init();
+            };
+        })(this);
+        this.sprite.src = 'images/parachutist.png';
     }
 
     init() {
@@ -145,9 +148,9 @@ class Lives {
     update() {
         --this.lives;
 
-        if (this.lives === 0) {
-            this.gameOver();
-        }
+        // if (this.lives === 0) {
+        //     this.gameOver();
+        // }
     }
 
     render() {
