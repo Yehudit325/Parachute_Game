@@ -62,12 +62,14 @@ class Boat {
 }
 
 class Parachute {
-    constructor(plane, boat, score) {
+    constructor(plane, boat, score, lives) {
         this.sprite = new Image();
         this.sprite.src = 'images/parachutist.png';
         this.plane = plane;
         this.boat = boat;
         this.score = score;
+        this.lives = lives;
+
         this.init();
     }
 
@@ -114,10 +116,10 @@ class Parachute {
     // checks if parachuter lands in the water and responds accordingly
     seaCollision() {
         if (this.y + this.sprite.height/2 > 460) {
+            this.lives.update();
             this.init();
         }
     }
-
 }
 
 class Score {
@@ -154,7 +156,9 @@ class Lives {
     }
 
     gameOver() {
-        ctx.clearRect(0,0,canvas.width,canvas.height)
+        alert("GAME OVER");
+        document.location.reload();
+        window.cancelAnimationFrame(animate);
     }
 }
 
@@ -172,13 +176,6 @@ var lives = new Lives();
 for (var i = 0; i < 4; i++) {
     allParachuters.push(new Parachute(plane, boat, score, lives));
 }
-
-// var score = 0;
-//
-// function scoreUpdate() {
-//     ctx.font = "30px Arial";
-//     ctx.fillText("Score: " + score, 10, 50);
-// }
 
 
 /**********************************************************
