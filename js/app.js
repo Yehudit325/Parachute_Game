@@ -89,7 +89,6 @@ class Parachute {
     }
 
     update(dt) {
-
         // when drop point is reached - drop parachuter
         if ((Math.floor(plane.x) === this.dropPoint) && this.drop) {
             // initialize parachuters starting coordinates
@@ -104,7 +103,6 @@ class Parachute {
             this.seaCollision();
         }
     }
-
 
     // checks if parachuter lands on boat and responds accordingly
     boatCollision() {
@@ -148,9 +146,9 @@ class Lives {
     update() {
         --this.lives;
 
-        // if (this.lives === 0) {
-        //     this.gameOver();
-        // }
+        if (this.lives === 0) {
+            this.gameOver();
+        }
     }
 
     render() {
@@ -159,9 +157,11 @@ class Lives {
     }
 
     gameOver() {
-        alert("GAME OVER");
-        document.location.reload();
-        window.cancelAnimationFrame(animate);
+        setTimeout(function() {
+            alert("GAME OVER");
+            document.location.reload();
+            window.cancelAnimationFrame(animate);
+        }, 100)
     }
 }
 
@@ -179,7 +179,6 @@ var lives = new Lives();
 for (var i = 0; i < 4; i++) {
     allParachuters.push(new Parachute(plane, boat, score, lives));
 }
-
 
 /**********************************************************
  *                      Event Listeners                   *
