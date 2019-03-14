@@ -68,6 +68,7 @@ class Parachute {
         this.score = score;
         this.lives = lives;
         this.sprite = new Image();
+        // call init function after image is loaded in order to use image as variable in function
         this.sprite.onload = (function(par){
             return function() {
                 par.init();
@@ -79,8 +80,11 @@ class Parachute {
     init() {
         // this.x = 0;
         this.y = -200;
-        this.dy = Math.floor(Math.random() * 100) + 20;
+        // sets random falling speed for parachute
+        this.dy = Math.floor(Math.random() * 100) + 50;
+        // ensures random parachute drops throughout the game
         this.dropPoint = Math.floor(Math.random() * (canvas.width - this.sprite.width - 50));
+        // marks if parachute should be dropped or not
         this.drop = true;
     }
 
@@ -97,6 +101,7 @@ class Parachute {
                 this.drop = false;
         }
 
+        // if dropped
         if (!this.drop) {
             this.y += this.dy * dt;
             this.boatCollision();
@@ -110,7 +115,7 @@ class Parachute {
             this.y + this.sprite.height/2 < boat.y + boat.sprite.height &&
             this.y + this.sprite.height > boat.y + boat.sprite.height/2) {
                 this.score.update();
-                this.init();
+                this.init(); // resets parachuter with new dropPoint and falling speed
         }
     }
 
@@ -118,7 +123,7 @@ class Parachute {
     seaCollision() {
         if (this.y + this.sprite.height/2 > 460) {
             this.lives.update();
-            this.init();
+            this.init(); // resets parachuter with new dropPoint and falling speed
         }
     }
 }
@@ -157,6 +162,7 @@ class Lives {
     }
 
     gameOver() {
+        // gives the canvas time to redraw correct number of lives remaining before alerting game over
         setTimeout(function() {
             alert("GAME OVER");
             document.location.reload();
@@ -164,7 +170,6 @@ class Lives {
         }, 100)
     }
 }
-
 
 /**********************************************************
  *                   Variable Declarations                *
