@@ -62,11 +62,12 @@ class Boat {
 }
 
 class Parachute {
-    constructor(plane, boat) {
+    constructor(plane, boat, score) {
         this.sprite = new Image();
         this.sprite.src = 'images/parachutist.png';
         this.plane = plane;
         this.boat = boat;
+        this.score = score;
         this.init();
     }
 
@@ -74,7 +75,7 @@ class Parachute {
         // this.x = 0;
         this.y = -200;
         this.dy = Math.floor(Math.random() * 100) + 20;
-        this.dropPoint = Math.floor(Math.random() * 800);
+        this.dropPoint = Math.floor(Math.random() * (canvas.width - this.sprite.width - 50));
         this.drop = true;
     }
 
@@ -105,6 +106,7 @@ class Parachute {
         if (this.x < boat.x + boat.sprite.width && this.x + this.sprite.width > boat.x &&
             this.y + this.sprite.height/2 < boat.y + boat.sprite.height &&
             this.y + this.sprite.height > boat.y + boat.sprite.height/2) {
+                this.score.update();
                 this.init();
         }
     }
@@ -118,6 +120,45 @@ class Parachute {
 
 }
 
+class Score {
+    constructor() {
+        this.score = 0;
+    }
+
+    update() {
+        this.score += 10;
+    }
+
+    render() {
+        ctx.font = "25px Arial";
+        ctx.fillText("Score: " + this.score, 20, 50);
+    }
+}
+
+class Lives {
+    constructor() {
+        this.lives = 3;
+    }
+
+    update() {
+        --this.lives;
+
+        if (this.lives === 0) {
+            this.gameOver();
+        }
+    }
+
+    render() {
+        ctx.font = "25px Arial";
+        ctx.fillText("Lives: " + this.lives, 20, 100);
+    }
+
+    gameOver() {
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+    }
+}
+
+
 /**********************************************************
  *                   Variable Declarations                *
  **********************************************************/
@@ -125,10 +166,19 @@ class Parachute {
 var plane = new Plane();
 var boat = new Boat();
 var allParachuters = [];
+var score = new Score();
+var lives = new Lives();
 
-for (var i = 0; i < 3; i++) {
-    allParachuters.push(new Parachute(plane, boat));
+for (var i = 0; i < 4; i++) {
+    allParachuters.push(new Parachute(plane, boat, score, lives));
 }
+
+// var score = 0;
+//
+// function scoreUpdate() {
+//     ctx.font = "30px Arial";
+//     ctx.fillText("Score: " + score, 10, 50);
+// }
 
 
 /**********************************************************

@@ -62,8 +62,8 @@ var Engine = (function(global) {
         allParachuters.forEach(function(parachute) {
                 parachute.update(dt);
             });
-    }
 
+    }
 
     /* This function initially draws the game area.
      * This function is called every game tick
@@ -81,8 +81,10 @@ var Engine = (function(global) {
         allParachuters.forEach(function(parachute) {
                 parachute.render();
             });
-    }
 
+        score.render();
+        lives.render();
+    }
 
     /* This function handles game reset states.
      * It's only called once by the init() method.
